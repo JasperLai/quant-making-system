@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * 风控规则引擎
@@ -24,8 +25,8 @@ public class RiskRuleEngine {
     // 存储品种持仓统计
     private Map<String, BigDecimal> positionMap = new HashMap<>();
     
-    // 存储最近订单时间戳，用于限频检查
-    private List<LocalDateTime> recentOrders = new ArrayList<>();
+    // 存储最近订单时间戳，用于限频检查 (线程安全队列)
+    private ConcurrentLinkedQueue<LocalDateTime> recentOrders = new ConcurrentLinkedQueue<>();
     
     // 存储风控日志
     private List<RiskAuditLog> auditLogs = new ArrayList<>();
@@ -212,21 +213,32 @@ public class RiskRuleEngine {
     }
     
     /**
-     * 检查订单频率
+     * 检查订单频率 (线程安全版本)
+     * 使用 ConcurrentLinkedQueue 实现高性能无锁限流
      */
     private RiskCheckResult checkOrderFrequency() {
         LocalDateTime now = LocalDateTime.now();
-        // 清理一分钟前的订单记录
-        recentOrders.removeIf(time -> time.isBefore(now.minusSeconds(60)));
+        LocalDateTime cutoff = now.minusSeconds(60);
+        int maxOrders = riskConfig.getMaxOrdersPerSecond();
         
-        if (recentOrders.size() >= riskConfig.getMaxOrdersPerSecond()) {
-            String reason = String.format("订单频率过高，当前%d个订单/秒，超过限制%d个订单/秒", 
-                                        recentOrders.size(), 
-                                        riskConfig.getMaxOrdersPerSecond());
+        // 1. 清理过期订单 (非阻塞操作)
+        LocalDateTime oldest;
+        while ((oldest = recentOrders.peek()) != null && oldest.isBefore(cutoff)) {
+            recentOrders.poll();  // 移除过期的订单
+        }
+        
+        // 2. 检查是否超过限制 (原子操作)
+        int currentCount = recentOrders.size();
+        if (currentCount >= maxOrders) {
+            String reason = String.format("订单频率过高，当前%d个订单/分钟，超过限制%d个订单/分钟", 
+                                        currentCount, 
+                                        maxOrders);
             return new RiskCheckResult(false, reason, "ORDER_FREQUENCY_LIMIT");
         }
         
-        recentOrders.add(now);
+        // 3. 添加新订单 (无阻塞添加)
+        recentOrders.offer(now);
+        
         return new RiskCheckResult(true, "订单频率检查通过", "ORDER_FREQUENCY_LIMIT");
     }
     
