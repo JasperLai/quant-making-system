@@ -23,7 +23,7 @@ public class OrderBookService {
     private static final Logger logger = LoggerFactory.getLogger(OrderBookService.class);
     
     @Autowired
-    private OrderBookRepository orderBookRepository;
+    protected OrderBookRepository orderBookRepository;
     
     // 内存订单簿缓存: symbol -> OrderBook
     private final Map<String, OrderBook> orderBookCache = new ConcurrentHashMap<>();

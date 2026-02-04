@@ -368,4 +368,19 @@ class OrderBookDepthTest {
             return quantity;
         }
     }
+    
+    /**
+     * 辅助方法：更新深度报价
+     */
+    private void updateDepthQuote(String symbol, Integer marketType, String source,
+                                  List<DepthLevel> bids, List<DepthLevel> asks) {
+        for (DepthLevel bid : bids) {
+            orderBookService.updateQuote(symbol, marketType, source, 
+                                       OrderBook.BUY, bid.getPrice(), bid.getQuantity());
+        }
+        for (DepthLevel ask : asks) {
+            orderBookService.updateQuote(symbol, marketType, source, 
+                                       OrderBook.SELL, ask.getPrice(), ask.getQuantity());
+        }
+    }
 }

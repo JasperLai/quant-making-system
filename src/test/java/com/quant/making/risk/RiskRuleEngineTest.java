@@ -36,7 +36,7 @@ public class RiskRuleEngineTest {
     @Test
     void testPreTradeCheckPass() {
         // 创建一个符合所有风控条件的报价
-        Quote validQuote = new Quote("VALID_SYMBOL", 1, Quote.BUY, 
+        Quote validQuote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                     new BigDecimal("100"), new BigDecimal("5"));
         validQuote.setSpread(new BigDecimal("0.02")); // 2% spread
         validQuote.setLevel(1);
@@ -50,7 +50,7 @@ public class RiskRuleEngineTest {
     @Test
     void testSingleTradeAmountLimit() {
         // 创建一个超出单笔交易金额限制的报价
-        Quote invalidQuote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote invalidQuote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                       new BigDecimal("1500"), new BigDecimal("2"));
         
         RiskRuleEngine.RiskCheckResult result = riskRuleEngine.preTradeCheck(invalidQuote);
@@ -97,7 +97,7 @@ public class RiskRuleEngineTest {
     @Test
     void testLevelDeviationLimit() {
         // 创建一个档位偏离超标的报价
-        Quote highLevelQuote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote highLevelQuote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                         new BigDecimal("100"), new BigDecimal("1"));
         highLevelQuote.setLevel(5); // 超过最大3档
         
@@ -110,7 +110,7 @@ public class RiskRuleEngineTest {
     @Test
     void testSpreadLimit() {
         // 创建一个点差超标的报价
-        Quote highSpreadQuote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote highSpreadQuote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                          new BigDecimal("100"), new BigDecimal("1"));
         highSpreadQuote.setSpread(new BigDecimal("0.1")); // 10% spread, 超过5%限制
         
@@ -123,7 +123,7 @@ public class RiskRuleEngineTest {
     @Test
     void testPostTradeCheckPass() {
         // 创建一个符合所有事后风控条件的成交
-        Quote validExecutedQuote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote validExecutedQuote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                             new BigDecimal("100"), new BigDecimal("5"));
         BigDecimal pnl = new BigDecimal("100"); // 盈利100
         
@@ -135,7 +135,7 @@ public class RiskRuleEngineTest {
     
     @Test
     void testDailyTradeAmountLimit() {
-        Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote quote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                new BigDecimal("1000"), new BigDecimal("6")); // 6000 > 5000 limit
         
         RiskRuleEngine.RiskCheckResult result = riskRuleEngine.postTradeCheck(quote, new BigDecimal("100"));
@@ -146,7 +146,7 @@ public class RiskRuleEngineTest {
     
     @Test
     void testLossLimit() {
-        Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote quote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                new BigDecimal("100"), new BigDecimal("5"));
         BigDecimal largeLoss = new BigDecimal("-600"); // 超过-500的亏损限制
         
@@ -170,7 +170,7 @@ public class RiskRuleEngineTest {
     @Test
     void testDisabledRiskControl() {
         riskConfig.setEnabled(false);
-        Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote quote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                new BigDecimal("10000"), new BigDecimal("10")); // 远超限制
         
         RiskRuleEngine.RiskCheckResult result = riskRuleEngine.preTradeCheck(quote);
@@ -185,7 +185,7 @@ public class RiskRuleEngineTest {
     void testOrderFrequencyPass() {
         // 创建符合频率限制的报价
         for (int i = 0; i < riskConfig.getMaxOrdersPerSecond() - 1; i++) {
-            Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+            Quote quote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                    new BigDecimal("100"), new BigDecimal("1"));
             RiskRuleEngine.RiskCheckResult result = riskRuleEngine.preTradeCheck(quote);
             assertTrue(result.isPassed(), "订单 " + (i + 1) + " 应该通过");
@@ -196,13 +196,13 @@ public class RiskRuleEngineTest {
     void testOrderFrequencyLimitExceeded() {
         // 先发送 maxOrdersPerSecond - 1 个订单，全部通过
         for (int i = 0; i < riskConfig.getMaxOrdersPerSecond() - 1; i++) {
-            Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+            Quote quote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                    new BigDecimal("100"), new BigDecimal("1"));
             riskRuleEngine.preTradeCheck(quote);
         }
         
         // 第 maxOrdersPerSecond 个订单应该被拦截
-        Quote blockedQuote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote blockedQuote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                       new BigDecimal("100"), new BigDecimal("1"));
         RiskRuleEngine.RiskCheckResult result = riskRuleEngine.preTradeCheck(blockedQuote);
         
@@ -214,7 +214,7 @@ public class RiskRuleEngineTest {
     void testOrderFrequencyRecovery() throws InterruptedException {
         // 先发送超过限制的订单被拦截
         for (int i = 0; i < riskConfig.getMaxOrdersPerSecond() + 1; i++) {
-            Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+            Quote quote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                    new BigDecimal("100"), new BigDecimal("1"));
             riskRuleEngine.preTradeCheck(quote);
         }
@@ -222,7 +222,7 @@ public class RiskRuleEngineTest {
         // 等待超过60秒后，订单记录过期，应该可以继续下单
         Thread.sleep(61000);
         
-        Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+        Quote quote = new Quote("ALLOWED_SYMBOL", 1, Quote.BUY, 
                                new BigDecimal("100"), new BigDecimal("1"));
         RiskRuleEngine.RiskCheckResult result = riskRuleEngine.preTradeCheck(quote);
         

@@ -22,10 +22,10 @@ public class QuoteService {
     private static final Logger logger = LoggerFactory.getLogger(QuoteService.class);
     
     @Autowired
-    private QuoteEngine quoteEngine;
+    protected QuoteEngine quoteEngine;
     
     @Autowired
-    private OrderBookService orderBookService;
+    protected OrderBookService orderBookService;
     
     // 当前活跃报价缓存: symbol -> List<Quote>
     private final Map<String, List<Quote>> activeQuotes = new ConcurrentHashMap<>();

@@ -27,7 +27,7 @@ public class QuoteEngine {
     private static final Logger logger = LoggerFactory.getLogger(QuoteEngine.class);
     
     @Autowired
-    private OrderBookService orderBookService;
+    protected OrderBookService orderBookService;
     
     // 默认报价有效期（秒）
     private static final int DEFAULT_QUOTE_VALIDITY_SECONDS = 5;
