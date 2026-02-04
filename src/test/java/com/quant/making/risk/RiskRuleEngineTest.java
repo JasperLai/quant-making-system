@@ -178,4 +178,54 @@ public class RiskRuleEngineTest {
         assertTrue(result.isPassed());
         assertEquals("风控未启用", result.getMessage());
     }
+    
+    // ==================== 订单频率测试 ====================
+    
+    @Test
+    void testOrderFrequencyPass() {
+        // 创建符合频率限制的报价
+        for (int i = 0; i < riskConfig.getMaxOrdersPerSecond() - 1; i++) {
+            Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+                                   new BigDecimal("100"), new BigDecimal("1"));
+            RiskRuleEngine.RiskCheckResult result = riskRuleEngine.preTradeCheck(quote);
+            assertTrue(result.isPassed(), "订单 " + (i + 1) + " 应该通过");
+        }
+    }
+    
+    @Test
+    void testOrderFrequencyLimitExceeded() {
+        // 先发送 maxOrdersPerSecond - 1 个订单，全部通过
+        for (int i = 0; i < riskConfig.getMaxOrdersPerSecond() - 1; i++) {
+            Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+                                   new BigDecimal("100"), new BigDecimal("1"));
+            riskRuleEngine.preTradeCheck(quote);
+        }
+        
+        // 第 maxOrdersPerSecond 个订单应该被拦截
+        Quote blockedQuote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+                                      new BigDecimal("100"), new BigDecimal("1"));
+        RiskRuleEngine.RiskCheckResult result = riskRuleEngine.preTradeCheck(blockedQuote);
+        
+        assertFalse(result.isPassed());
+        assertTrue(result.getMessage().contains("订单频率过高"));
+    }
+    
+    @Test
+    void testOrderFrequencyRecovery() throws InterruptedException {
+        // 先发送超过限制的订单被拦截
+        for (int i = 0; i < riskConfig.getMaxOrdersPerSecond() + 1; i++) {
+            Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+                                   new BigDecimal("100"), new BigDecimal("1"));
+            riskRuleEngine.preTradeCheck(quote);
+        }
+        
+        // 等待超过60秒后，订单记录过期，应该可以继续下单
+        Thread.sleep(61000);
+        
+        Quote quote = new Quote("TEST_SYMBOL", 1, Quote.BUY, 
+                               new BigDecimal("100"), new BigDecimal("1"));
+        RiskRuleEngine.RiskCheckResult result = riskRuleEngine.preTradeCheck(quote);
+        
+        assertTrue(result.isPassed(), "60秒后订单频率应该恢复正常");
+    }
 }
