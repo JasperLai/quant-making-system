@@ -1,170 +1,179 @@
-# 订单簿模块测试用例补充
+# 订单簿模块测试用例补充（深度报价场景）
 
-## 边界场景测试用例
+## TC-OB-001-Enhanced: 真实深度报价聚合测试
 
-### TC-OB-004: 订单簿为空时的边界处理
-**目的**: 验证订单簿为空时调用获取最优价返回null
+### 目的
+验证真实场景下的深度报价（Depth of Market）正确聚合，包含完整的报价字段。
 
-**前置条件**:
-- 订单簿无数据
+### 完整报价数据结构
+每个深度报价档位包含以下6个字段：
 
-**测试步骤**:
-1. 调用 getBestBid("XAUUSD")
-2. 调用 getBestAsk("XAUUSD")
+| 字段 | 类型 | 说明 | 示例值 |
+|------|------|------|--------|
+| priceLevel | int | 价格档位序号 | 1, 2, 3... |
+| source | String | 价源标识 | DIMPLE, CFETS, FOREIGN_BANK |
+| marketType | int | 市场类型 | 1=境内黄金, 2=境内外汇, 3=境外 |
+| side | int | 买卖方向 | 1=BUY, 2=SELL |
+| price | BigDecimal | 档位价格 | 2000.00, 380.50 |
+| quantity | BigDecimal | 档位数量 | 100.00, 500000 |
 
-**预期结果**:
-- 返回 null
-- 无异常抛出
+### 真实场景数据示例
 
----
-
-### TC-OB-005: 相同价格多笔订单的时间顺序
-**目的**: 验证同价格多笔订单按时间顺序正确累加
-
-**前置条件**:
-- 订单簿初始为空
-
-**测试步骤**:
-1. 发送 Buy XAUUSD @ 2000 × 10 (t1)
-2. 发送 Buy XAUUSD @ 2000 × 20 (t2, t2 > t1)
-3. 发送 Buy XAUUSD @ 2000 × 30 (t3, t3 > t2)
-4. 查询订单簿
-
-**预期结果**:
-- 价格档位 [2000] 数量 = 60
-- 价源记录包含所有3笔订单的时间戳
-
----
-
-### TC-OB-006: 不同价源数据聚合
-**目的**: 验证多价源同档位数据正确聚合
-
-**前置条件**:
-- 订单簿初始为空
-
-**测试步骤**:
-1. 发送 SOURCE_A Buy XAUUSD @ 2000 × 10
-2. 发送 SOURCE_B Buy XAUUSD @ 2000 × 20
-3. 发送 SOURCE_A Sell XAUUSD @ 2001 × 15
-4. 查询订单簿
-
-**预期结果**:
-- Buy档位 [2000, 30], 来源: SOURCE_A, SOURCE_B
-- Sell档位 [2001, 15], 来源: SOURCE_A
-- 来源信息完整保留
-
----
-
-### TC-OB-007: 订单删除/过期处理
-**目的**: 验证订单过期后正确从订单簿移除
-
-**前置条件**:
-- 订单簿有数据
-
-**测试步骤**:
-1. 发送 Buy 订单，设置过期时间
-2. 等待过期
-3. 检查订单簿状态
-
-**预期结果**:
-- 过期订单从聚合中移除
-- 数量正确扣减
-
----
-
-### TC-OB-008: 高频更新压力测试
-**目的**: 验证毫秒级高频更新的线程安全性
-
-**测试步骤**:
-1. 启动 100 线程并发更新
-2. 每秒 1000 次更新
-3. 持续 10 秒
-4. 验证最终数据一致性
-
-**预期结果**:
-- 无数据丢失
-- 无数据重复
-- 最终聚合结果正确
-
----
-
-### TC-OB-009: 快照生成与恢复
-**目的**: 验证快照生成和恢复的完整性
-
-**前置条件**:
-- 订单簿有数据
-
-**测试步骤**:
-1. 构建订单簿数据
-2. 执行 snapshot()
-3. 清除内存数据
-4. 从快照恢复
-5. 对比恢复前后数据
-
-**预期结果**:
-- 快照数据完整
-- 恢复后数据与快照一致
-
----
-
-### TC-OB-010: 市场类型隔离
-**目的**: 验证不同市场类型订单簿独立
-
-**测试步骤**:
-1. 发送 境内黄金 XAUUSD Buy @ 2000 × 10
-2. 发送 境内外汇 XAUUSD Buy @ 2000 × 20
-3. 分别查询两个订单簿
-
-**预期结果**:
-- 境内黄金订单簿: XAUUSD [2000 × 10]
-- 境内外汇订单簿: XAUUSD [2000 × 20]
-- 数据不混淆
-
----
-
-## 性能测试用例
-
-### PT-OB-001: 订单簿更新延迟测试
-- 目标: < 100ms
-- 方法: 测量从 updateQuote 到订单簿更新的时间
-- 验证: P99 < 100ms
-
-### PT-OB-002: 内存占用测试
-- 目标: 单品种订单簿 < 10MB
-- 方法: 持续更新后检查JVM内存
-- 验证: 无内存泄漏
-
----
-
-## 集成测试用例
-
-### IT-OB-001: 价源适配器集成
-**目的**: 验证价源数据正确流入订单簿
-
-**测试步骤**:
-1. 模拟价源适配器发送报价数据
-2. 验证数据正确更新到订单簿
-
-**预期结果**:
-- 数据格式正确转换
-- 价源标识正确设置
-
----
-
-## 测试数据模板
-
-### 示例订单簿数据
+#### 示例1: Dimple境内黄金深度报价
 ```json
 {
   "symbol": "XAUUSD",
-  "marketType": 1,
-  "entries": [
+  "quotes": [
     {
-      "side": 1,
+      "priceLevel": 1,
+      "source": "DIMPLE",
+      "marketType": 1,
+      "side": "BUY",
       "price": "2000.00",
-      "quantity": "100.00",
-      "source": "DIMPLE"
+      "quantity": "100.00"
+    },
+    {
+      "priceLevel": 2,
+      "source": "DIMPLE",
+      "marketType": 1,
+      "side": "BUY",
+      "price": "1999.50",
+      "quantity": "150.00"
+    },
+    {
+      "priceLevel": 3,
+      "source": "DIMPLE",
+      "marketType": 1,
+      "side": "BUY",
+      "price": "1999.00",
+      "quantity": "200.00"
+    },
+    {
+      "priceLevel": 1,
+      "source": "DIMPLE",
+      "marketType": 1,
+      "side": "SELL",
+      "price": "2000.50",
+      "quantity": "80.00"
+    },
+    {
+      "priceLevel": 2,
+      "source": "DIMPLE",
+      "marketType": 1,
+      "side": "SELL",
+      "price": "2001.00",
+      "quantity": "120.00"
     }
   ]
 }
 ```
+
+#### 示例2: CFETS境内外汇深度报价
+```json
+{
+  "symbol": "USDJPY",
+  "quotes": [
+    {
+      "priceLevel": 1,
+      "source": "CFETS",
+      "marketType": 2,
+      "side": "BUY",
+      "price": "7.2500",
+      "quantity": "1000000"
+    },
+    {
+      "priceLevel": 2,
+      "source": "CFETS",
+      "marketType": 2,
+      "side": "BUY",
+      "price": "7.2450",
+      "quantity": "1500000"
+    },
+    {
+      "priceLevel": 1,
+      "source": "CFETS",
+      "marketType": 2,
+      "side": "SELL",
+      "price": "7.2550",
+      "quantity": "800000"
+    }
+  ]
+}
+```
+
+#### 示例3: 外资行境外外汇深度报价
+```json
+{
+  "symbol": "EURUSD",
+  "quotes": [
+    {
+      "priceLevel": 1,
+      "source": "FOREIGN_BANK",
+      "marketType": 3,
+      "side": "BUY",
+      "price": "1.0800",
+      "quantity": "500000"
+    },
+    {
+      "priceLevel": 1,
+      "source": "FOREIGN_BANK",
+      "marketType": 3,
+      "side": "SELL",
+      "price": "1.0850",
+      "quantity": "400000"
+    }
+  ]
+}
+```
+
+### 测试验证点
+
+1. **数据结构完整性**
+   - ✅ 每个档位包含6个字段
+   - ✅ 字段类型正确
+   - ✅ 数值精度正确
+
+2. **聚合正确性**
+   - ✅ 相同价格的多笔订单正确聚合
+   - ✅ 买卖方向正确区分
+   - ✅ 价源标识正确记录
+
+3. **最优价格提取**
+   - ✅ Best Bid = 最高买价
+   - ✅ Best Ask = 最低卖价
+   - ✅ Spread 计算正确
+
+4. **市场隔离**
+   - ✅ 不同市场类型订单簿独立
+   - ✅ 不同价源数据不混淆
+   - ✅ 多品种数据隔离
+
+### 预期结果
+
+| 品种 | 市场类型 | 价源 | Best Bid | Best Ask | Spread |
+|------|----------|------|----------|----------|--------|
+| XAUUSD | 境内黄金(1) | DIMPLE | 2000.00 × 100 | 2000.50 × 80 | 0.50 |
+| USDJPY | 境内外汇(2) | CFETS | 7.2500 × 1M | 7.2550 × 0.8M | 0.0050 |
+| EURUSD | 境外(3) | FOREIGN_BANK | 1.0800 × 0.5M | 1.0850 × 0.4M | 0.0050 |
+
+### 代码示例
+
+```java
+// 发送完整结构的深度报价
+orderBookService.updateQuote(
+    "XAUUSD",                          // symbol
+    OrderBook.MARKET_DOMESTIC_GOLD,    // marketType
+    "DIMPLE",                          // source
+    OrderBook.BUY,                     // side
+    new BigDecimal("2000.00"),         // price
+    new BigDecimal("100.00")           // quantity
+);
+```
+
+### 测试用例ID映射
+
+| 原测试用例 | 增强版测试用例 | 说明 |
+|-----------|---------------|------|
+| TC-OB-001 | TC-OB-001-Enhanced | 深度报价聚合测试 |
+| TC-OB-002 | TC-OB-002-Enhanced | 深度报价快照测试 |
+| TC-OB-003 | TC-OB-003-Enhanced | 深度报价初始化测试 |

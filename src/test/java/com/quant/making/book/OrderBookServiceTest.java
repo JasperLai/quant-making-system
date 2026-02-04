@@ -41,7 +41,16 @@ class OrderBookServiceTest {
 
     /**
      * 测试TC-OB-001: 订单簿档位聚合
-     * 验证相同价格的订单能够正确聚合
+     * 
+     * 注意：此测试用例使用简化的数据结构，
+     * 真实场景中报价应为深度报价（Depth of Market），包含多个价格档位。
+     * 
+     * 真实场景示例（以XAUUSD为例）：
+     * Dimple深度报价:
+     * Bid Depth: [2000.00×100, 1999.50×150, 1999.00×200, ...]
+     * Ask Depth: [2000.50×80, 2001.00×120, 2001.50×180, ...]
+     * 
+     * 完整测试请参考 OrderBookDepthTest 类
      */
     @Test
     void testUpdateQuote_Aggregation() {
