@@ -1,0 +1,71 @@
+# 量化做市系统 - Spring Boot 配置 (YAML格式)
+
+# 应用配置
+spring:
+  application:
+    name: quant-making-system
+
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/quant_making?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: your_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  # 定时任务配置
+  task:
+    scheduling:
+      pool:
+        size: 5
+
+# 日志配置
+logging:
+  level:
+    com.quant.making: DEBUG
+    org.hibernate.SQL: DEBUG
+
+# 订单簿配置
+orderbook:
+  snapshot:
+    interval-seconds: 60
+    retain-hours: 24
+
+# 风控配置
+risk:
+  enabled: true
+
+  # 金额限制
+  max-single-trade-amount: 1000000        # 单笔最大交易金额: 100万
+  max-daily-trade-amount: 10000000        # 单日最大交易金额: 1000万
+  max-position-per-symbol: 500000         # 单品种最大持仓: 50万
+
+  # 交易限制
+  max-spread-limit: 0.01                 # 最大点差限制: 1%
+  max-level-deviation: 5                  # 最大档位偏离: 5档
+  max-orders-per-second: 10               # 每秒最大订单数: 10
+  max-leverage: 10                       # 最大杠杆倍数: 10
+  max-loss-limit: -100000                # 最大亏损限额: -10万
+
+  # 黑名单 (禁止交易的品种)
+  blacklist:
+    - BTC
+    - ETH
+    - DOGE
+    - SOL
+
+  # 白名单 (仅允许交易的品种，空列表表示不限制)
+  whitelist:
+    - XAUUSD
+    - EURUSD
+    - GBPUSD
+    - USDJPY
