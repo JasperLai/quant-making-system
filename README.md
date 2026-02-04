@@ -71,15 +71,24 @@ quant-making-system/
 ├── src/                    # 源代码
 │   ├── main/
 │   │   ├── java/
+│   │   │   └── com/quant/making/book/   # 订单簿模块
+│   │   │       ├── OrderBookEntry.java
+│   │   │       ├── OrderBook.java
+│   │   │       ├── OrderBookService.java
+│   │   │       └── OrderBookRepository.java
 │   │   └── resources/
 │   └── test/
-│       ├── java/
-│       └── resources/
+│       └── java/
+│           └── com/quant/making/book/   # 订单簿测试
+│               ├── OrderBookServiceTest.java
+│               ├── OrderBookTest.java
+│               └── OrderBookEntryTest.java
 ├── tests/                  # 测试用例
 │   ├── data/              # 测试数据
 │   └── scripts/           # 测试脚本
 ├── config/                 # 配置文件
 ├── scripts/                # 部署脚本
+├── pom.xml                # Maven配置
 ├── README.md
 └── LICENSE
 ```
@@ -161,6 +170,56 @@ kubectl apply -f k8s/
 ## 版本历史
 
 - v0.1.0 - 项目初始化，完成需求分析和架构设计
+- v0.1.1 - 订单簿模块完成，实现数据模型、服务层、数据访问层和单元测试
+
+## 模块实现状态
+
+### 订单簿模块 (Order Book Module) - ✅ 已完成
+- **实现时间**: 2026-02-04
+- **核心功能**:
+  - 多价源数据聚合
+  - 按价格档位聚合
+  - 最优价格提取 (getBestBid/getBestAsk)
+  - 快照生成与恢复
+  - 线程安全支持
+
+### 报价引擎模块 (Quote Engine Module) - 🔄 开发中
+- **计划功能**:
+  - 最优价提取
+  - 点差计算
+  - 报价生成
+  - 与CFETS前置对接
+
+### 风控模块 (Risk Control Module) - ⏳ 待开发
+- **计划功能**:
+  - 前置风控检查
+  - 事后风控检查
+  - 风控参数配置
+
+### 审计模块 (Audit Module) - ⏳ 待开发
+- **计划功能**:
+  - 事件记录
+  - 快照存储
+  - 查询接口
+
+### 成交回报模块 (Trade Report Module) - ⏳ 待开发
+- **计划功能**:
+  - 回报接收
+  - 订单关联
+  - 持仓更新
+- v0.2.0 - **订单簿模块实现完成** ✅
+  - 实现 OrderBookEntry 实体（订单簿档位）
+  - 实现 OrderBook 聚合视图（含 PriceLevel）
+  - 实现 OrderBookService 核心服务
+  - 实现 OrderBookRepository 数据访问
+  - 完成 TC-OB-001 订单簿档位聚合测试
+  - 完成 TC-OB-002 订单簿快照生成测试
+  - 完成 TC-OB-003 订单簿初始化测试
+  - 实现完整的单元测试覆盖（OrderBookEntryTest, OrderBookTest, OrderBookServiceTest, OrderBookSnapshotTest）
+  - 支持多市场类型（境内黄金/境内外汇/境外）
+  - 支持多价源数据聚合
+  - 支持毫秒级订单簿更新
+  - 支持定时快照和手动快照功能
 
 ## 贡献指南
 
