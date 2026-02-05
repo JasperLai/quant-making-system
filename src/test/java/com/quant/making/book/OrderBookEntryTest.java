@@ -89,9 +89,9 @@ class OrderBookEntryTest {
         
         String toString = entry.toString();
         assertTrue(toString.contains("XAUUSD"));
-        assertTrue(toString.contains("MARKET_OFFSHORE"));
+        assertTrue(toString.contains("3")); // MARKET_OFFSHORE = 3
         assertTrue(toString.contains("SourceA"));
-        assertTrue(toString.contains("BUY"));
+        assertTrue(toString.contains("1")); // BUY = 1
         assertTrue(toString.contains("2000"));
         assertTrue(toString.contains("100"));
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.quant.making.risk.RiskRuleEngineTest" time="5.126" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.quant.making.book.OrderBookTest" time="0.002" tests="8" errors="0" skipped="0" failures="0">
   <properties>
     <property name="socksProxyHost" value="127.0.0.1"/>
     <property name="http.proxyHost" value="127.0.0.1"/>
@@ -74,19 +74,12 @@
     <property name="LOGGED_APPLICATION_NAME" value="[quant-making-system] "/>
     <property name="http.proxyPort" value="7890"/>
   </properties>
-  <testcase name="testSingleTradeAmountLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.001"/>
-  <testcase name="testDisabledRiskControl" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testLevelDeviationLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testOrderFrequencyLimitExceeded" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.001"/>
-  <testcase name="testPostTradeCheckPass" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testPreTradeCheckPass" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testWhitelistWithAllowedSymbol" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testDailyTradeAmountLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testBlacklistCheck" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testOrderFrequencyRecovery" classname="com.quant.making.risk.RiskRuleEngineTest" time="5.112"/>
-  <testcase name="testOrderFrequencyPass" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.002"/>
-  <testcase name="testLossLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.002"/>
-  <testcase name="testUpdateRiskConfig" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.001"/>
-  <testcase name="testWhitelistCheck" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testSpreadLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.001"/>
+  <testcase name="testMixedBuySellAtSamePrice" classname="com.quant.making.book.OrderBookTest" time="0.0"/>
+  <testcase name="testPriceLevelClass" classname="com.quant.making.book.OrderBookTest" time="0.001"/>
+  <testcase name="testGetBestBid_Ask" classname="com.quant.making.book.OrderBookTest" time="0.0"/>
+  <testcase name="testEmptyOrderBook" classname="com.quant.making.book.OrderBookTest" time="0.0"/>
+  <testcase name="testAddQuote_SellAggregation" classname="com.quant.making.book.OrderBookTest" time="0.001"/>
+  <testcase name="testSourceQuantityTracking" classname="com.quant.making.book.OrderBookTest" time="0.0"/>
+  <testcase name="testPriceLevelSorting" classname="com.quant.making.book.OrderBookTest" time="0.0"/>
+  <testcase name="testAddQuote_BuyAggregation" classname="com.quant.making.book.OrderBookTest" time="0.0"/>
 </testsuite>

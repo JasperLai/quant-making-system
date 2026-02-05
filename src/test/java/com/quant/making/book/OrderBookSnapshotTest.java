@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ class OrderBookSnapshotTest {
     @BeforeEach
     void setUp() {
         orderBookService = new OrderBookService();
-        orderBookService.orderBookRepository = orderBookRepository;
+        ReflectionTestUtils.setField(orderBookService, "orderBookRepository", orderBookRepository);
         orderBookService.clearAllOrderBooks(); // 清空缓存
     }
 

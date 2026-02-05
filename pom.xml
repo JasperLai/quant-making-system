@@ -67,6 +67,24 @@
             <artifactId>junit-platform-suite-api</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <!-- Jakarta Persistence API (替代 javax.persistence) -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+        
+        <!-- Jakarta Annotation API (替代 javax.annotation) -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+        
+        <!-- Jakarta Transaction API (替代 javax.transaction) -->
+        <dependency>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
+        </dependency>
     </dependencies>
     
     <build>

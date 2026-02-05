@@ -218,7 +218,7 @@ public class RiskRuleEngine {
      */
     private RiskCheckResult checkOrderFrequency() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime cutoff = now.minusSeconds(60);
+        LocalDateTime cutoff = now.minusSeconds(5);
         int maxOrders = riskConfig.getMaxOrdersPerSecond();
         
         // 1. 清理过期订单 (非阻塞操作)
@@ -230,7 +230,7 @@ public class RiskRuleEngine {
         // 2. 检查是否超过限制 (原子操作)
         int currentCount = recentOrders.size();
         if (currentCount >= maxOrders) {
-            String reason = String.format("订单频率过高，当前%d个订单/分钟，超过限制%d个订单/分钟", 
+            String reason = String.format("订单频率过高，当前%d个订单/5秒，超过限制%d个订单/5秒", 
                                         currentCount, 
                                         maxOrders);
             return new RiskCheckResult(false, reason, "ORDER_FREQUENCY_LIMIT");

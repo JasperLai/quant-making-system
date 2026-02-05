@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.quant.making.risk.RiskRuleEngineTest" time="5.126" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.quant.making.book.OrderBookServiceTest" time="0.075" tests="6" errors="0" skipped="0" failures="0">
   <properties>
     <property name="socksProxyHost" value="127.0.0.1"/>
     <property name="http.proxyHost" value="127.0.0.1"/>
@@ -74,19 +74,35 @@
     <property name="LOGGED_APPLICATION_NAME" value="[quant-making-system] "/>
     <property name="http.proxyPort" value="7890"/>
   </properties>
-  <testcase name="testSingleTradeAmountLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.001"/>
-  <testcase name="testDisabledRiskControl" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testLevelDeviationLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testOrderFrequencyLimitExceeded" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.001"/>
-  <testcase name="testPostTradeCheckPass" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testPreTradeCheckPass" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testWhitelistWithAllowedSymbol" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testDailyTradeAmountLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testBlacklistCheck" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testOrderFrequencyRecovery" classname="com.quant.making.risk.RiskRuleEngineTest" time="5.112"/>
-  <testcase name="testOrderFrequencyPass" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.002"/>
-  <testcase name="testLossLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.002"/>
-  <testcase name="testUpdateRiskConfig" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.001"/>
-  <testcase name="testWhitelistCheck" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.0"/>
-  <testcase name="testSpreadLimit" classname="com.quant.making.risk.RiskRuleEngineTest" time="0.001"/>
+  <testcase name="testUpdateQuote_Aggregation" classname="com.quant.making.book.OrderBookServiceTest" time="0.067">
+    <system-out><![CDATA[2026-02-05T08:42:51.671+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Cleared all OrderBooks
+2026-02-05T08:42:51.675+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Snapshot generated for symbol: EURUSD
+]]></system-out>
+  </testcase>
+  <testcase name="testGetBestAsk" classname="com.quant.making.book.OrderBookServiceTest" time="0.001">
+    <system-out><![CDATA[2026-02-05T08:42:51.694+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Cleared all OrderBooks
+2026-02-05T08:42:51.694+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Snapshot generated for symbol: EURUSD
+]]></system-out>
+  </testcase>
+  <testcase name="testGetBestBid" classname="com.quant.making.book.OrderBookServiceTest" time="0.0">
+    <system-out><![CDATA[2026-02-05T08:42:51.695+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Cleared all OrderBooks
+2026-02-05T08:42:51.695+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Snapshot generated for symbol: EURUSD
+]]></system-out>
+  </testcase>
+  <testcase name="testSnapshotGeneration" classname="com.quant.making.book.OrderBookServiceTest" time="0.003">
+    <system-out><![CDATA[2026-02-05T08:42:51.696+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Cleared all OrderBooks
+2026-02-05T08:42:51.696+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Snapshot generated for symbol: EURUSD
+2026-02-05T08:42:51.696+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Snapshot generated for symbol: EURUSD
+]]></system-out>
+  </testcase>
+  <testcase name="testGetOrderBook" classname="com.quant.making.book.OrderBookServiceTest" time="0.001">
+    <system-out><![CDATA[2026-02-05T08:42:51.699+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Cleared all OrderBooks
+2026-02-05T08:42:51.699+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Snapshot generated for symbol: EURUSD
+]]></system-out>
+  </testcase>
+  <testcase name="testUpdateQuotes_Batch" classname="com.quant.making.book.OrderBookServiceTest" time="0.0">
+    <system-out><![CDATA[2026-02-05T08:42:51.700+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Cleared all OrderBooks
+2026-02-05T08:42:51.700+08:00  INFO 24081 --- [quant-making-system] [           main] com.quant.making.book.OrderBookService   : Snapshot generated for symbol: EURUSD
+]]></system-out>
+  </testcase>
 </testsuite>

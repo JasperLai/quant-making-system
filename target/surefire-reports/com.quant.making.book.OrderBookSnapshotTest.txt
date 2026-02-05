@@ -1,0 +1,86 @@
+-------------------------------------------------------------------------------
+Test set: com.quant.making.book.OrderBookSnapshotTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 2, Errors: 2, Skipped: 0, Time elapsed: 0.013 s <<< FAILURE! -- in com.quant.making.book.OrderBookSnapshotTest
+com.quant.making.book.OrderBookSnapshotTest.testSnapshotInternalLogic -- Time elapsed: 0.003 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  0L
+to be greater than:
+  0L
+
+	at com.quant.making.book.OrderBookSnapshotTest.testSnapshotInternalLogic(OrderBookSnapshotTest.java:267)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+com.quant.making.book.OrderBookSnapshotTest.testSnapshotGeneration -- Time elapsed: 0.003 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual not to be empty
+	at com.quant.making.book.OrderBookSnapshotTest.testSnapshotGeneration(OrderBookSnapshotTest.java:86)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+com.quant.making.book.OrderBookSnapshotTest.testOrderBookInitialization -- Time elapsed: 0.003 s <<< ERROR!
+org.mockito.exceptions.misusing.PotentialStubbingProblem: 
+
+Strict stubbing argument mismatch. Please check:
+ - this invocation of 'findLatestSnapshot' method:
+    orderBookRepository.findLatestSnapshot(
+    "EURUSD",
+    null
+);
+    -> at com.quant.making.book.OrderBookService.restoreFromSnapshot(OrderBookService.java:242)
+ - has following stubbing(s) with different arguments:
+    1. orderBookRepository.findLatestSnapshot(
+    "EURUSD",
+    2
+);
+      -> at com.quant.making.book.OrderBookSnapshotTest.testOrderBookInitialization(OrderBookSnapshotTest.java:140)
+Typically, stubbing argument mismatch indicates user mistake when writing tests.
+Mockito fails early so that you can debug potential problem easily.
+However, there are legit scenarios when this exception generates false negative signal:
+  - stubbing the same method multiple times using 'given().will()' or 'when().then()' API
+    Please use 'will().given()' or 'doReturn().when()' API for stubbing.
+  - stubbed method is intentionally invoked with different arguments by code under test
+    Please use default or 'silent' JUnit Rule (equivalent of Strictness.LENIENT).
+For more information see javadoc for PotentialStubbingProblem class.
+	at com.quant.making.book.OrderBookService.restoreFromSnapshot(OrderBookService.java:242)
+	at com.quant.making.book.OrderBookSnapshotTest.testOrderBookInitialization(OrderBookSnapshotTest.java:144)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+com.quant.making.book.OrderBookSnapshotTest.testRestoreFromEmptySnapshot -- Time elapsed: 0.001 s <<< ERROR!
+org.mockito.exceptions.misusing.PotentialStubbingProblem: 
+
+Strict stubbing argument mismatch. Please check:
+ - this invocation of 'findLatestSnapshot' method:
+    orderBookRepository.findLatestSnapshot(
+    "EURUSD",
+    null
+);
+    -> at com.quant.making.book.OrderBookService.restoreFromSnapshot(OrderBookService.java:242)
+ - has following stubbing(s) with different arguments:
+    1. orderBookRepository.findLatestSnapshot(
+    "EURUSD",
+    2
+);
+      -> at com.quant.making.book.OrderBookSnapshotTest.testRestoreFromEmptySnapshot(OrderBookSnapshotTest.java:180)
+Typically, stubbing argument mismatch indicates user mistake when writing tests.
+Mockito fails early so that you can debug potential problem easily.
+However, there are legit scenarios when this exception generates false negative signal:
+  - stubbing the same method multiple times using 'given().will()' or 'when().then()' API
+    Please use 'will().given()' or 'doReturn().when()' API for stubbing.
+  - stubbed method is intentionally invoked with different arguments by code under test
+    Please use default or 'silent' JUnit Rule (equivalent of Strictness.LENIENT).
+For more information see javadoc for PotentialStubbingProblem class.
+	at com.quant.making.book.OrderBookService.restoreFromSnapshot(OrderBookService.java:242)
+	at com.quant.making.book.OrderBookSnapshotTest.testRestoreFromEmptySnapshot(OrderBookSnapshotTest.java:184)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
